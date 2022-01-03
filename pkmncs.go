@@ -9,50 +9,93 @@ import (
     "sort"
 )
 
-func getMoveGet (  ){
-    panic ( "getMoveGet not implemented yet" )
+// binarySearch checks if a specified name is in a vector/slice. If it is, returns true. Else, returns false.
+func binarySearch (name string, list []string, start int, end int) (cotains bool) {
+
+    mid := ( start + end ) / 2
+    mid = int( mid )
+
+    if start <= end {
+
+        if list[mid] == name {
+            return true
+        }
+        
+        if list[mid] > name {
+            return binarySearch(name, list, start, mid - 1)
+        }
+
+        return binarySearch(name, list, mid + 1, end)
+    }
+
+    return false
+}
+
+func getMoveGet (){
+    panic ("getMoveGet not implemented yet")
 }
 
 // getMoveLearnedBy receives a byte response from a API call and convert it and returns a map. 
-func getMoveLearnedBy ( responseData []byte ) ( pkmnList []string ) {
-    pkmnMap := make ( map[string]( []map[string]string ) )
-    json.Unmarshal ( responseData, &pkmnMap )
+func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
+    pkmnMap := make (map[string]([]map[string]string))
+    json.Unmarshal (responseData, &pkmnMap)
     learnedBy := pkmnMap["learned_by_pokemon"]
-    
-    // var pkmnList []string
 
     for key := range learnedBy {
         pkmnList = append(pkmnList, learnedBy[key]["name"])
     }
 
-    sort.Strings ( pkmnList )
-
-    fmt.Println ( pkmnList )
+    sort.Strings (pkmnList)
 
     return pkmnList
 }
 
-func getMoveInfo () {
-    moveData := "https://pokeapi.co/api/v2/move/" + os.Args[1]
+func getMoveInfo (move string) ([]string) {
+    moveData := "https://pokeapi.co/api/v2/move/" + move
 
-    moveByte, callError  :=  http.Get ( moveData )
+    moveByte, callError  :=  http.Get(moveData)
 
     if callError != nil || moveByte.StatusCode == 404 {
-        fmt.Printf ( "'%s' move not found. Check spelling.\n", os.Args[1] )
+        fmt.Println(callError)
+        fmt.Printf ("'%s' move not found. Check spelling.\n", move)
         os.Exit ( 1 )
     }
 
-    responseData, readError := ioutil.ReadAll( moveByte.Body )
+    responseData, readError := ioutil.ReadAll(moveByte.Body)
 
     if readError != nil{
-        panic ( "Error while reading byte body" )
+        panic ("Error while reading byte body")
     }
 
-     getMoveLearnedBy ( responseData )
+     return getMoveLearnedBy (responseData)
+}
 
+func parseArgs (){
+    var candidates [][]string
+
+    if len(os.Args) <= 1 {
+        println("You should specify at least one move")
+        os.Exit(1)
+    }
+
+    for i := 1; i < len(os.Args); i++{
+        pkmnnList :=  getMoveInfo(os.Args[i])
+        
+        if len(candidates) == 0{
+            candidates = append(candidates, pkmnnList)
+            
+        }else{
+            // compare new line with the older line
+        }
+
+    }
 
 }
- 
+
+func parseIntersections(matrix [][]string) (intersection []string) {
+    return intersection
+}
+
 func main (){
-    getMoveInfo()
+    parseArgs()
 }
