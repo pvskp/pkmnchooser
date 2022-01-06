@@ -9,6 +9,18 @@ import (
     "sort"
 )
 
+func printSlice (slice []string) {
+    for i := 0; i < len(slice); i++ {
+        fmt.Printf("%s ", slice[i])
+    }
+}
+
+func sliceRemove (slice []string, index int) ([]string) {
+    slice[index] = slice[len(slice)-1]
+    slice[len(slice)-1] = ""
+    return slice[:len(slice)-1]
+}
+
 // binarySearch checks if a specified name is in a vector/slice. If it is, returns true. Else, returns false.
 func binarySearch (name string, list []string, start int, end int) (cotains bool) {
 
@@ -71,7 +83,7 @@ func getMoveInfo (move string) ([]string) {
 }
 
 func parseArgs (){
-    var candidates [][]string
+    var candidates []string
 
     if len(os.Args) <= 1 {
         println("You should specify at least one move")
@@ -81,19 +93,25 @@ func parseArgs (){
     for i := 1; i < len(os.Args); i++{
         pkmnnList :=  getMoveInfo(os.Args[i])
         
-        if len(candidates) == 0{
-            candidates = append(candidates, pkmnnList)
-            
+        if i == 1{
+            copy(candidates, pkmnnList)
+           
         }else{
-            // compare new line with the older line
+            parseIntersections (candidates, pkmnnList)
         }
-
     }
-
+    
 }
 
-func parseIntersections(matrix [][]string) (intersection []string) {
-    return intersection
+func parseIntersections(candidates []string, newMoveList []string) {
+
+    for i := 0; i < len(candidates); i++ {
+    // conferir se o dado elemento da linha está presente na nova linha
+        if !binarySearch(candidates[i], newMoveList , 0, len(newMoveList)) {
+            // remover elementos que não estão presentes nas duas linhas
+            candidates = sliceRemove(candidates, i)
+        }
+    }
 }
 
 func main (){
