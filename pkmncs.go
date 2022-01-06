@@ -10,6 +10,11 @@ import (
 )
 
 func printSlice (slice []string) {
+    if (len(slice) == 0) {
+        fmt.Println("No results")
+        return
+    }
+
     for i := 0; i < len(slice); i++ {
         fmt.Printf("%s ", slice[i])
     }
@@ -25,7 +30,6 @@ func sliceRemove (slice []string, index int) ([]string) {
 func binarySearch (name string, list []string, start int, end int) (cotains bool) {
 
     mid := ( start + end ) / 2
-    mid = int( mid )
 
     if start <= end {
 
@@ -94,24 +98,33 @@ func parseArgs (){
         pkmnnList :=  getMoveInfo(os.Args[i])
         
         if i == 1{
+            candidates = make([]string, len(pkmnnList))
             copy(candidates, pkmnnList)
            
         }else{
-            parseIntersections (candidates, pkmnnList)
-        }
+             candidates = parseIntersections (candidates, pkmnnList)
+             // printSlice(candidates)
+         }
     }
-    
+    printSlice(candidates)   
 }
 
-func parseIntersections(candidates []string, newMoveList []string) {
+func parseIntersections(candidates []string, newMoveList []string) ([]string) {
+
+    newCandidates := make([]string, len(candidates))
+    j := 0
 
     for i := 0; i < len(candidates); i++ {
     // conferir se o dado elemento da linha está presente na nova linha
-        if !binarySearch(candidates[i], newMoveList , 0, len(newMoveList)) {
+        if binarySearch(candidates[i], newMoveList, 0, len(newMoveList)-1) {
             // remover elementos que não estão presentes nas duas linhas
-            candidates = sliceRemove(candidates, i)
+            newCandidates[j] = candidates[i]
+            j++
         }
     }
+
+    newCandidates = newCandidates[:j]
+    return newCandidates
 }
 
 func main (){
