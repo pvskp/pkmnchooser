@@ -7,49 +7,8 @@ import (
     "encoding/json"
     "os"
     "sort"
+    "pkmncs/helper"
 )
-
-func printSlice (slice []string) {
-    if (len(slice) == 0) {
-        fmt.Println("No results")
-        return
-    }
-
-    for i := 0; i < len(slice); i++ {
-        fmt.Printf("%s ", slice[i])
-    }
-}
-
-func sliceRemove (slice []string, index int) ([]string) {
-    slice[index] = slice[len(slice)-1]
-    slice[len(slice)-1] = ""
-    return slice[:len(slice)-1]
-}
-
-// binarySearch checks if a specified name is in a vector/slice. If it is, returns true. Else, returns false.
-func binarySearch (name string, list []string, start int, end int) (cotains bool) {
-
-    mid := ( start + end ) / 2
-
-    if start <= end {
-
-        if list[mid] == name {
-            return true
-        }
-        
-        if list[mid] > name {
-            return binarySearch(name, list, start, mid - 1)
-        }
-
-        return binarySearch(name, list, mid + 1, end)
-    }
-
-    return false
-}
-
-func getMoveGet (){
-    panic ("getMoveGet not implemented yet")
-}
 
 // getMoveLearnedBy receives a byte response from a API call and convert it and returns a map. 
 func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
@@ -103,10 +62,9 @@ func parseArgs (){
            
         }else{
              candidates = parseIntersections (candidates, pkmnnList)
-             // printSlice(candidates)
          }
     }
-    printSlice(candidates)   
+    helper.PrintSlice(candidates)   
 }
 
 func parseIntersections(candidates []string, newMoveList []string) ([]string) {
@@ -116,7 +74,7 @@ func parseIntersections(candidates []string, newMoveList []string) ([]string) {
 
     for i := 0; i < len(candidates); i++ {
     // conferir se o dado elemento da linha está presente na nova linha
-        if binarySearch(candidates[i], newMoveList, 0, len(newMoveList)-1) {
+        if helper.BinarySearch(candidates[i], newMoveList, 0, len(newMoveList)-1) {
             // remover elementos que não estão presentes nas duas linhas
             newCandidates[j] = candidates[i]
             j++
