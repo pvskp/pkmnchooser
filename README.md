@@ -45,6 +45,6 @@ rhydon
 snorlax
 wigglytuff
 ```
-## Contribute
+## LICENSE
 
 Feel free to use this project as you wish.
