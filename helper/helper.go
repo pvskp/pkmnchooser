@@ -15,7 +15,7 @@ func PrintSlice (slice []string) {
     }
 }
 
-// binarySearch checks if a specified name is in a vector/slice. If it is, returns true. Else, returns false.
+// BinarySearch checks if a specified name is in a vector/slice. If it is, returns true. Else, returns false.
 func BinarySearch (name string, list []string, start int, end int) (cotains bool) {
 
     mid := ( start + end ) / 2

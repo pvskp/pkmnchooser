@@ -44,7 +44,7 @@ func getMoveInfo (move string) ([]string) {
 
      return getMoveLearnedBy (responseData)
 }
-
+// parseArgs deals with system args to pkmncs
 func parseArgs (){
     var candidates []string
 
@@ -67,6 +67,7 @@ func parseArgs (){
     helper.PrintSlice(candidates)   
 }
 
+//  parseIntersections identifies intersections between two slices. Returns a slice with the intersections.
 func parseIntersections(candidates []string, newMoveList []string) ([]string) {
 
     newCandidates := make([]string, len(candidates))
