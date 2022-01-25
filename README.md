@@ -11,21 +11,19 @@ This project has as it main goal to improve my knowledge on the Go programming l
 ## Getting Started
 
 To use pkmncs, first clone the repository, cd into project and compile everything with Go Build tool
-
-
-
-`git clone https://github.com/pvskp/pkmnchooser.git
+```
+git clone https://github.com/pvskp/pkmnchooser.git
 cd pkmnchooser
-go build`
-
-
+go build
+```
 Then, you can just execute the binary file using each desired move as an argument. For example:
 
 `./pkmncs thunderbolt flamethrower water-gun`
 
 Should return
 
-`castform
+```
+castform
 castform-rainy
 castform-snowy
 castform-sunny
@@ -45,8 +43,8 @@ nidoking
 nidoqueen
 rhydon
 snorlax
-wigglytuff`
-
+wigglytuff
+```
 ## Contribute
 
 Feel free to use this project as you wish.
