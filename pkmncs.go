@@ -11,8 +11,38 @@ import (
 )
 
 //TODO: create help function
+func _help(){
+    //print instructions
+    panic ("_help not implemented yet.")
+}
 
 //TODO: analyze when the listed pokemons can learn the desired moves
+func getPokeInfo ( pokemonList []string ) {
+
+    for i := range (pokemonList) {
+
+        pokemonData := ("https://pokeapi.co/api/v2/pokemon/"+pokemonList[i])
+
+        moveByte, callError  :=  http.Get(pokemonData)
+
+        if callError != nil || moveByte.StatusCode == 404 {
+            fmt.Println(callError)
+            fmt.Printf ("Error while checking %s\n", pokemonList[i])
+            os.Exit ( 1 )
+        }
+
+
+
+    }
+
+    responseData, readError := ioutil.ReadAll(moveByte.Body)
+
+    if readError != nil{
+        panic ("Error while reading byte body")
+    }
+
+    panic ("getPokeInfo not implemented yet.")
+}
 
 // getMoveLearnedBy receives a byte response from a API call and convert it and returns a map. 
 func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
