@@ -19,27 +19,27 @@ func _help(){
 //TODO: analyze when the listed pokemons can learn the desired moves
 func getPokeInfo ( pokemonList []string ) {
 
-    for i := range (pokemonList) {
+    for _, pokemon := range (pokemonList) {
 
-        pokemonData := ("https://pokeapi.co/api/v2/pokemon/"+pokemonList[i])
+        pokemonData := ("https://pokeapi.co/api/v2/pokemon/"+pokemon)
 
-        moveByte, callError  :=  http.Get(pokemonData)
+        pokemonByte, callError  :=  http.Get(pokemonData)
 
-        if callError != nil || moveByte.StatusCode == 404 {
+        if callError != nil || pokemonByte.StatusCode == 404 {
             fmt.Println(callError)
-            fmt.Printf ("Error while checking %s\n", pokemonList[i])
+            fmt.Printf ("Error while checking %s\n", pokemon)
             os.Exit ( 1 )
         }
 
+        responseData, readError := ioutil.ReadAll(pokemonByte.Body)
+
+        if readError != nil{
+            panic ("Error while reading byte body")
+        }
 
 
     }
 
-    responseData, readError := ioutil.ReadAll(moveByte.Body)
-
-    if readError != nil{
-        panic ("Error while reading byte body")
-    }
 
     panic ("getPokeInfo not implemented yet.")
 }
