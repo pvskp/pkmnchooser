@@ -10,6 +10,10 @@ import (
     "pkmncs/helper"
 )
 
+//TODO: create help function
+
+//TODO: analyze when the listed pokemons can learn the desired moves
+
 // getMoveLearnedBy receives a byte response from a API call and convert it and returns a map. 
 func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
     pkmnMap := make (map[string]([]map[string]string))
