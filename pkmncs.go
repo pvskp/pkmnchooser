@@ -1,13 +1,11 @@
 package main
 
-import ( 
-    "io/ioutil"
-    "net/http"
-    "fmt"
-    "encoding/json"
-    "os"
-    "sort"
-    "pkmncs/helper"
+import (
+	"encoding/json"
+	"os"
+	"pkmncs/helper"
+	"pkmncs/structs"
+	"sort"
 )
 
 //TODO: create help function
@@ -18,40 +16,20 @@ func _help(){
 
 //TODO: analyze when the listed pokemons can learn the desired moves
 func getPokeInfo ( pokemonList []string ) {
-
-    for _, pokemon := range (pokemonList) {
-
-        pokemonData := ("https://pokeapi.co/api/v2/pokemon/"+pokemon)
-
-        pokemonByte, callError  :=  http.Get(pokemonData)
-
-        if callError != nil || pokemonByte.StatusCode == 404 {
-            fmt.Println(callError)
-            fmt.Printf ("Error while checking %s\n", pokemon)
-            os.Exit ( 1 )
-        }
-
-        responseData, readError := ioutil.ReadAll(pokemonByte.Body)
-
-        if readError != nil{
-            panic ("Error while reading byte body")
-        }
-
-
+    for _, pokemon := range(pokemonList) {
+        pokeData, _ := helper.ApiConsume("https://pokeapi.co/api/v2/pokemon"+pokemon)
+        var pokemon structs.Pokemon
+        json.Unmarshal(pokeData, &pokemon)
     }
-
-
-    panic ("getPokeInfo not implemented yet.")
 }
 
-// getMoveLearnedBy receives a byte response from a API call and convert it and returns a map. 
+// getMoveLearnedBy receives a byte response from a API call and convert it and returns a struct. 
 func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
-    pkmnMap := make (map[string]([]map[string]string))
-    json.Unmarshal (responseData, &pkmnMap)
-    learnedBy := pkmnMap["learned_by_pokemon"]
+    var pkmnLearnedBy structs.LearnedBy
+    json.Unmarshal (responseData, &pkmnLearnedBy)
 
-    for key := range learnedBy {
-        pkmnList = append(pkmnList, learnedBy[key]["name"])
+    for _, key := range pkmnLearnedBy.Pokemons {
+        pkmnList = append(pkmnList, key.Name)
     }
 
     sort.Strings (pkmnList)
@@ -61,23 +39,10 @@ func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
 
 func getMoveInfo (move string) ([]string) {
     moveData := "https://pokeapi.co/api/v2/move/" + move
-
-    moveByte, callError  :=  http.Get(moveData)
-
-    if callError != nil || moveByte.StatusCode == 404 {
-        fmt.Println(callError)
-        fmt.Printf ("'%s' move not found. Check spelling.\n", move)
-        os.Exit ( 1 )
-    }
-
-    responseData, readError := ioutil.ReadAll(moveByte.Body)
-
-    if readError != nil{
-        panic ("Error while reading byte body")
-    }
-
+    responseData, _ := helper.ApiConsume(moveData)
      return getMoveLearnedBy (responseData)
 }
+
 // parseArgs deals with system args to pkmncs
 func parseArgs (){
     var candidates []string

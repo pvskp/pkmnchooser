@@ -2,7 +2,27 @@ package helper
 
 import (
     "fmt"
+    "net/http"
+    "io/ioutil"
 )
+
+func ApiConsume(endpoint string) ([]byte, error) {
+    // TODO: Implement returns to errors
+    r, err := http.Get(endpoint)
+    
+    if err != nil{
+        panic("Error while consuming on endpoint"+endpoint)
+    }
+    
+    responseData, err := ioutil.ReadAll(r.Body)
+
+    if err != nil{
+        panic("Error while parsing byte data on API endpoint" + endpoint)
+    }
+    
+    return responseData, nil
+}
+
 
 func PrintSlice (slice []string) {
     if (len(slice) == 0) {
