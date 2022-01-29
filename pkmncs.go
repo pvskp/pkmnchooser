@@ -20,6 +20,7 @@ func getPokeInfo ( pokemonList []string ) {
         pokeData, _ := helper.ApiConsume("https://pokeapi.co/api/v2/pokemon"+pokemon)
         var pokemon structs.Pokemon
         json.Unmarshal(pokeData, &pokemon)
+        //TODO: Finish this with a better way to get the data besides API consuming (caching).
     }
 }
 
