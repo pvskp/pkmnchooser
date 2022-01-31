@@ -1,4 +1,4 @@
-package main
+package cache
 
 import (
     "fmt"
@@ -35,7 +35,7 @@ func CreateCacheFolder () {
 }
 
 func CacheExists (content string) (bool) {
-    _, err := os.Stat(CACHEDIR+content+".json")
+    _, err := os.Stat(CACHEDIR+content)
     if os.IsNotExist(err) {
         return false
     }
@@ -43,8 +43,8 @@ func CacheExists (content string) (bool) {
     return true
 }
 
-func GetCache (content string) (string) {
-    cacheFile := CACHEDIR+content+".json"
+func GetCache (content string) ([]byte) {
+    cacheFile := CACHEDIR+content
     cacheByte, err := ioutil.ReadFile(cacheFile)
 
     if err != nil{
@@ -52,13 +52,9 @@ func GetCache (content string) (string) {
         os.Exit(1)
         
     }
-    return string(cacheByte)
+    return cacheByte
 }
 
-func main (){
+func CacheContent (filename string, content []byte) {
+    os.WriteFile(CACHEDIR+filename, content, 0700)
 }
-
-// Se a pasta de cache não existir, criar
-// Se existir, buscar cache
-// Se cache tiver expirado, recriar
-// Senao, importar com base no cache

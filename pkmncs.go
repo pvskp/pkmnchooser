@@ -5,6 +5,8 @@ import (
 	"os"
 	"pkmncs/helper"
 	"pkmncs/structs"
+    "pkmncs/cache"
+    "fmt"
 	"sort"
 )
 
@@ -15,7 +17,7 @@ func _help(){
 }
 
 //TODO: analyze when the listed pokemons can learn the desired moves
-func getPokeInfo ( pokemonList []string ) {
+func getPokeInfo (pokemonList []string) {
     for _, pokemon := range(pokemonList) {
         pokeData, _ := helper.ApiConsume("https://pokeapi.co/api/v2/pokemon"+pokemon)
         var pokemon structs.Pokemon
@@ -39,8 +41,15 @@ func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
 }
 
 func getMoveInfo (move string) ([]string) {
+    if cache.CacheExists(move) {
+        // fmt.Println("Using cache!")
+        return getMoveLearnedBy(cache.GetCache(move)) 
+    }
+
     moveData := "https://pokeapi.co/api/v2/move/" + move
     responseData, _ := helper.ApiConsume(moveData)
+    cache.CacheContent(move, responseData)
+    // fmt.Println(responseData)
      return getMoveLearnedBy (responseData)
 }
 
@@ -89,3 +98,9 @@ func parseIntersections(candidates []string, newMoveList []string) ([]string) {
 func main (){
     parseArgs()
 }
+
+// Se a pasta de cache não existir, criar
+// Se existir, buscar cache
+// Se cache tiver expirado, recriar
+// Senao, importar com base no cache
+
