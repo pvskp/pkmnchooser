@@ -6,8 +6,8 @@ import (
 	"pkmncs/helper"
 	"pkmncs/structs"
     "pkmncs/cache"
-    "fmt"
 	"sort"
+    "fmt"
 )
 
 //TODO: create help function
@@ -16,13 +16,32 @@ func _help(){
     panic ("_help not implemented yet.")
 }
 
+//
+func parseLearnedAt (pokemon string) []string {
+    content := cache.GetCache(pokemon)
+    var pkmnStruct structs.Pokemon
+    json.Unmarshal(content, &pkmnStruct)
+    fmt.Println(pkmnStruct)
+    panic ("parseLearnedAt not implemented yet")
+}
+
 //TODO: analyze when the listed pokemons can learn the desired moves
 func getPokeInfo (pokemonList []string) {
-    for _, pokemon := range(pokemonList) {
-        pokeData, _ := helper.ApiConsume("https://pokeapi.co/api/v2/pokemon"+pokemon)
-        var pokemon structs.Pokemon
-        json.Unmarshal(pokeData, &pokemon)
-        //TODO: Finish this with a better way to get the data besides API consuming (caching).
+    var pkmnStruct structs.Pokemon
+    for _, pokemon := range (pokemonList){
+        if cache.CacheExists(pokemon) {
+            panic("Cache not implemented yet")
+            // parse when learned
+        }else{
+            r, _ := helper.ApiConsume("https://pokeapi.co/api/v2/pokemon/"+pokemon)
+            json.Unmarshal (r, &pkmnStruct)
+            for _, m := range(pkmnStruct.Moves){
+                fmt.Println(m.Move.Name)
+                for _, n := range(m.VersionDetails) {
+                    fmt.Println("\t", n.LearnMethod.Name, n.VersionGroup.Name)
+                }
+            }
+        }
     }
 }
 
@@ -30,40 +49,33 @@ func getPokeInfo (pokemonList []string) {
 func getMoveLearnedBy (responseData []byte) (pkmnList []string) {
     var pkmnLearnedBy structs.LearnedBy
     json.Unmarshal (responseData, &pkmnLearnedBy)
-
     for _, key := range pkmnLearnedBy.Pokemons {
         pkmnList = append(pkmnList, key.Name)
     }
-
     sort.Strings (pkmnList)
-
     return pkmnList
 }
 
 func getMoveInfo (move string) ([]string) {
     if cache.CacheExists(move) {
-        // fmt.Println("Using cache!")
+        // fmt.Printf("Using cache for %s!\n", move)
         return getMoveLearnedBy(cache.GetCache(move)) 
     }
-
     moveData := "https://pokeapi.co/api/v2/move/" + move
     responseData, _ := helper.ApiConsume(moveData)
     cache.CacheContent(move, responseData)
-    // fmt.Println(responseData)
      return getMoveLearnedBy (responseData)
 }
 
 // parseArgs deals with system args to pkmncs
 func parseArgs (){
     var candidates []string
-
     if len(os.Args) <= 1 {
         println("You should specify at least one move")
         os.Exit(1)
     }
-
     for i := 1; i < len(os.Args); i++{
-        pkmnnList :=  getMoveInfo(os.Args[i])
+        pkmnnList := getMoveInfo(os.Args[i])
         
         if i == 1{
             candidates = make([]string, len(pkmnnList))
@@ -78,10 +90,8 @@ func parseArgs (){
 
 //  parseIntersections identifies intersections between two slices. Returns a slice with the intersections.
 func parseIntersections(candidates []string, newMoveList []string) ([]string) {
-
     newCandidates := make([]string, len(candidates))
     j := 0
-
     for i := 0; i < len(candidates); i++ {
     // conferir se o dado elemento da linha está presente na nova linha
         if helper.BinarySearch(candidates[i], newMoveList, 0, len(newMoveList)-1) {
@@ -90,17 +100,13 @@ func parseIntersections(candidates []string, newMoveList []string) ([]string) {
             j++
         }
     }
-
     newCandidates = newCandidates[:j]
     return newCandidates
 }
 
 func main (){
-    parseArgs()
+    // parseArgs()
+    // parseLearnedAt("pikachu")
+    pkmnList := []string{"pikachu", "ditto"}
+    getPokeInfo(pkmnList)
 }
-
-// Se a pasta de cache não existir, criar
-// Se existir, buscar cache
-// Se cache tiver expirado, recriar
-// Senao, importar com base no cache
-

@@ -11,12 +11,14 @@ import (
 const TTL = 15 //days
 var CACHEDIR string = getHomeDir()+".cache/pkmncs/"
 
+// getHomeDir returns the user's home directory path. For example: /home/user/
 func getHomeDir () (string) {
     user, _ := user.Current()
     username := user.Username
     return ("/home/"+username+"/")
 }
 
+// CacheFolderExists identifies if a pkmncs cache folder exists on ~/.cache.
 func CacheFolderExists () (bool){
     _, err := os.Stat(CACHEDIR)
     if os.IsNotExist(err) {
@@ -26,6 +28,7 @@ func CacheFolderExists () (bool){
     return true
 }
 
+// CreateCacheFolder creates a cache folder for pkmncs on ~/.cache
 func CreateCacheFolder () {
     if !CacheFolderExists() {
         cmd := exec.Command("mkdir", "pkmncs")
@@ -34,6 +37,7 @@ func CreateCacheFolder () {
     }
 }
 
+// CacheExists verify if a desired content is cached for use.
 func CacheExists (content string) (bool) {
     _, err := os.Stat(CACHEDIR+content)
     if os.IsNotExist(err) {
@@ -43,6 +47,7 @@ func CacheExists (content string) (bool) {
     return true
 }
 
+// GetCache parses a cached content.
 func GetCache (content string) ([]byte) {
     cacheFile := CACHEDIR+content
     cacheByte, err := ioutil.ReadFile(cacheFile)
@@ -55,6 +60,7 @@ func GetCache (content string) ([]byte) {
     return cacheByte
 }
 
+// CacheContent caches a content on ~/.cache
 func CacheContent (filename string, content []byte) {
     os.WriteFile(CACHEDIR+filename, content, 0700)
 }
