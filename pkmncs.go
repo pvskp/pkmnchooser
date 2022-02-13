@@ -102,9 +102,6 @@ func parseIntersections(candidates []string, newMoveList []string) []string {
 }
 
 func main() {
-    // cache.CreateCacheFolder() // Do not forget this one
+    cache.CreateCacheFolder() // Do not forget this one
 	parseArgs()
-	// parseLearnedAt("pikachu")
-    //	pkmnList := []string{"pikachu", "ditto"}
-    //	getPokeInfo(pkmnList)
 }
