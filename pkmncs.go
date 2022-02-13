@@ -2,7 +2,6 @@ package main
 
 import (
 	"encoding/json"
-	"fmt"
 	"os"
 	"pkmncs/cache"
 	"pkmncs/helper"
@@ -48,6 +47,7 @@ func getMoveLearnedBy(responseData []byte) (pkmnList []string) {
 	for _, key := range pkmnLearnedBy.Pokemons {
 		pkmnList = append(pkmnList, key.Name)
 	}
+
 	sort.Strings(pkmnList)
 	return pkmnList
 }
@@ -57,6 +57,7 @@ func getMoveInfo(move string) []string {
 		// fmt.Printf("Using cache for %s!\n", move)
 		return getMoveLearnedBy(cache.GetCache(move))
 	}
+
 	moveData := "https://pokeapi.co/api/v2/move/" + move
 	responseData, _ := helper.ApiConsume(moveData)
 	cache.CacheContent(move, responseData)
@@ -101,8 +102,9 @@ func parseIntersections(candidates []string, newMoveList []string) []string {
 }
 
 func main() {
-	// parseArgs()
+    // cache.CreateCacheFolder() // Do not forget this one
+	parseArgs()
 	// parseLearnedAt("pikachu")
-	pkmnList := []string{"pikachu", "ditto"}
-	getPokeInfo(pkmnList)
+    //	pkmnList := []string{"pikachu", "ditto"}
+    //	getPokeInfo(pkmnList)
 }
